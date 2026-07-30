@@ -2,10 +2,13 @@
 
 **John Andrei Martinez · General AI Fluency · Week 5**
 
-> **Note on the attached hackathon brief:** `FlyRank_Hackathon_Brief.docx` wasn't
-> downloaded when I wrote this, so this spec is designed against the FL-06 brief
-> only. If the hackathon brief constrains the capstone agent differently, the
-> scope section is the part that changes — the evals and guardrails hold either way.
+> **Checked against the attached hackathon brief.** The brief asks for an
+> intelligence layer on Flewd's GSC + GA4 data — a prototype, not a personal
+> agent — so it doesn't re-scope this spec. It does two things to it. It confirms
+> the platform choice: the brief's ground rule is *"treat it as confidential,
+> don't share, post, or upload it outside your team,"* and a local skill never
+> sends a row anywhere. And it gives the agent a second job, which is the last
+> section of this doc.
 
 ---
 
@@ -193,3 +196,44 @@ fixed.
 Evals get written first, on purpose. If I build first I'll grade it on whether it
 looks smart, and I already know from ML-08 that the thing that looks like a win
 usually isn't.
+
+## Second job: the hackathon presentation
+
+The hackathon brief asks for "3–5 non-obvious findings" and a 5–10 minute
+presentation, and it shows exactly what a strong claim sounds like:
+
+> *"Brand queries show 7× URL-per-search stacking vs. 1.2× for non-brand."*
+
+That is four numbers in one sentence, said out loud, to the client whose data it
+is. It's the highest-stakes place a wrong number can appear all internship — a
+document I can quietly fix, a presentation I can't. So the agent's real first
+customer is my own hackathon insight list: every finding goes through it before
+it goes on a slide, and any finding that comes back `UNVERIFIABLE` doesn't get
+presented.
+
+Three things about the Flewd data change what the agent has to handle, and I'd
+rather write them into the instructions now than discover them on a slide:
+
+- **~8% of Site-level and ~36% of URL-level GSC queries are anonymized** (blank
+  query). Any claim about a query total is ambiguous until it says which
+  denominator it used. The agent should treat *"N queries"* as `UNVERIFIABLE`
+  unless the draft states whether anonymized rows are in or out. This is the same
+  trap as `avg_position = 0` meaning "no data" in the warehouse — a value that
+  looks like a number and isn't one.
+- **GSC and GA4 can't be joined on query**, only on landing page URL. So any
+  claim that ties a *search query* to a *conversion* is not just unverified, it's
+  unjoinable. That's a hard `WRONG`, and it's the mistake I'd most likely make
+  under time pressure, because that sentence sounds great.
+- **Revenue only populates on purchase events.** A per-page revenue average
+  computed over all events is wrong by construction, and the number it produces
+  looks perfectly reasonable.
+
+Adding these means one more tool — read the Flewd extracts — and one more eval
+case, the query-to-conversion claim from the second bullet, which must come back
+`WRONG` and say why. That's about an hour on top of the ten, and it's the hour
+with the best return, because it's the only guardrail here pointed at a real
+client rather than at my own drafts.
+
+Worth being straight about the limit again: this doesn't make my hackathon
+findings good. It only makes sure the numbers I say match the numbers I computed.
+Whether the analysis underneath was the right analysis is still on me.
