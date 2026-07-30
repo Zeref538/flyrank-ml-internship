@@ -2,7 +2,7 @@
 
 **John Andrei Martinez · General AI Fluency · Week 4**
 
-> **Scope note:** I haven't submitted FL-04 yet, so rather than classify a pipeline I never built, I classify the real one I *did* build: my FlyRank refresh-scoring pipeline (`work/notebooks/w04_baseline_score.ipynb`, `capstone.ipynb`).
+> **Scope note:** I classify two pipelines here, because I have two. My **FL-04 study-notes pipeline** (`FL-04-automation-workflow.md`) is the no-code one this assignment expects; my **FlyRank refresh-scoring pipeline** (`work/notebooks/w04_baseline_score.ipynb`) is the code one from my ML track. Both land on the same side of the workflow/agent line, for the same reason — and the second is the one I name a concrete agent upgrade for.
 
 ---
 
@@ -18,31 +18,33 @@ This matters because agents cost more, run slower, and fail in harder-to-trace w
 
 ## What MCP is
 
-The Model Context Protocol is a standard for how an AI application talks to outside systems. Its docs call it "a USB-C port for AI," and the analogy earns its place: before MCP, every AI app needed custom glue for every tool it touched — N apps × M tools meant N×M integrations. MCP makes it N+M: a tool exposes itself once as a server, and any MCP client can use it.
+The Model Context Protocol standardises how an AI application talks to outside systems. Its docs call it "a USB-C port for AI," and the analogy earns its place: before MCP, every app needed custom glue per tool — N apps × M tools meant N×M integrations. MCP makes it N+M.
 
-It has three primitives, and the difference between them is really **who's in control**:
+Its three primitives differ mainly in **who's in control**:
 
-- **Tools** — things the model can *do*, chosen by the model. Read a file, run a query, create a document. Model-controlled, so they need real care: a tool call has effects.
-- **Resources** — data the model can *read*, attached as context. A file's contents, a schema, a doc page. Application-controlled — the client decides what to hand over.
-- **Prompts** — reusable templates a *user* invokes deliberately, like a slash command. User-controlled.
+- **Tools** — things the model can *do*, chosen by the model. Model-controlled, so they need care: a tool call has effects.
+- **Resources** — data the model can *read*, attached as context. Application-controlled.
+- **Prompts** — reusable templates a *user* invokes, like a slash command. User-controlled.
 
-Worth being precise about one thing: MCP does not make anything an agent. It's plumbing. A workflow can call MCP tools at a step I hardcoded, and it's still a workflow. MCP is what makes agents *possible* by giving them hands — but hands aren't autonomy.
+One precision worth keeping: MCP does not make anything an agent. It's plumbing. A workflow calling MCP tools at a step I hardcoded is still a workflow. MCP gives agents hands — but hands aren't autonomy.
 
-## Classifying my pipeline: it's a workflow, clearly
+## Classifying my pipelines: both are workflows, clearly
 
-My refresh-scoring pipeline is a workflow, and not a borderline one. It runs: load the starter slice → fixed eligibility gate → fixed feature list → score a hand-written baseline rule → train the same three models every time → evaluate both on a client-holdout split → write a ranked queue with reason codes. I wrote that sequence and it cannot deviate from it. No step decides "actually, let me check something else first."
+**My FL-04 study-notes pipeline is a workflow.** Three prompts in a fixed order — MAP, TRIAGE, VERIFY — each step's output the next step's only input. A model does the work at every station, which is why it's a useful test case: *model-heavy and still not an agent.* Nothing in it decides to skip verification or loop back and re-map. I press the button three times; I am the control flow.
 
-Two details make it unambiguous. First, **there's no model in the control flow at all** — the sklearn models are predictors, not decision-makers about what the pipeline does next. Second, **the judgment is mine and stays mine**: I chose the 250-impression gate, Precision@50, and keeping staleness as a weak additive term after my signal check came back MIXED.
+**My refresh-scoring pipeline is also a workflow**, and not a borderline one. It runs: load the starter slice → fixed eligibility gate → fixed feature list → score a hand-written baseline rule → train the same three models every time → evaluate both on a client-holdout split → write a ranked queue with reason codes. I wrote that sequence and it cannot deviate from it. No step decides "actually, let me check something else first."
 
-The workflow is also the *right* choice here, not a limitation. My lane exists so a human editor reviews the top of the queue and decides the action — and a reproducible, auditable ranking is worth more to them than a clever one that takes a different path each run.
+Two details make it unambiguous. First, **there's no model in the control flow at all** — the sklearn models are predictors, not decision-makers about what runs next. Second, **the judgment is mine**: I chose the 250-impression gate, Precision@50, and keeping staleness as a weak additive term after my signal check came back MIXED.
+
+Both are also *right* as workflows, not limited ones. A human editor reviews the top of my queue — and a reproducible, auditable ranking is worth more to them than a clever one that takes a different path each run.
 
 ## What it would take to make it an agent
 
 The concrete upgrade: **a signal-auditing agent that decides for itself which assumptions to test before building the rule.**
 
-Right now that step is me: I picked two signals, wrote two bucket queries, read the tables, and assigned verdicts by hand — and one came back MIXED, which changed my rule design. An agent version would get the goal ("find which observable signals predict decline here, and which don't") plus tools: query the warehouse, compute a bucket table, check a sample size, read the data dictionary. Then it would pick its own next query from each result — see the 181–365 day bucket has only n=17, judge that too thin, widen the window or pivot to another signal, and stop when it has enough verdicts to justify a rule.
+Right now that step is me: I picked two signals, wrote two bucket queries, read the tables, and assigned verdicts by hand — and one came back MIXED, which changed my rule design. An agent version would get the goal ("find which observable signals predict decline here, and which don't") plus tools: query the warehouse, compute a bucket table, check a sample size. Then it would pick its own next query from each result — see the 181–365 day bucket has only n=17, judge that too thin, widen the window or pivot to another signal, and stop once it has enough verdicts.
 
-That's genuinely agentic because the query sequence depends on what earlier queries returned; I couldn't draw it in advance. Three things it would need that I don't have today: **tool access to the warehouse** (an MCP server wrapping my DuckDB/Hugging Face queries), **a stopping condition** (verdicts collected, or a query budget spent — otherwise it loops forever on 79 million rows), and **a verification step**, because an agent choosing its own analysis can also talk itself into a confident wrong verdict on a tiny sample. Honestly, I'd want it to *propose* verdicts and make me confirm them — the lesson this track keeps re-teaching is that the number you didn't check is the number that's lying.
+That's genuinely agentic because the query sequence depends on what earlier queries returned; I couldn't draw it in advance. Three things it needs that I don't have: **tool access to the warehouse** (an MCP server wrapping my DuckDB queries), **a stopping condition** (else it loops forever on 79M rows), and **a verification step**, because an agent choosing its own analysis can talk itself into a confident wrong verdict on a tiny sample. I'd want it to *propose* verdicts and make me confirm them — this track keeps re-teaching that the number you didn't check is the one that's lying.
 
 ---
 
