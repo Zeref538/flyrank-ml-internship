@@ -92,9 +92,12 @@ similarity is the angle between them — closer angle, closer meaning.
    and I just changed `data.js`, so the bot doesn't know about the FlyRank
    project yet. Worse, it fails silently — the bot answers confidently from the
    old index. This should run inside the build.
-3. **The FlyRank card has no screenshot.** It falls back to a text placeholder
-   while every other card has cycling images, so it looks like the weakest
-   project when it's the deepest one.
+3. ~~**The FlyRank card has no screenshot.**~~ **Fixed.** There's no UI to
+   screenshot, so I rendered two charts straight from `w05_model_metrics.json`
+   instead: Precision@50 by method with the hand rule hatched, and the
+   tie-breaking band showing why 0.88-over-0.86 isn't a win. Real numbers, no
+   mockup. The script asserts the model's score is actually inside the band
+   before it saves the image, so the chart can't outlive the claim it makes.
 4. **Twelve project cards is too many for one screen.** The filter chips help,
    but "All" dumps everything and a visitor doesn't know which three to read.
    The sitemap said three cases. I shipped twelve.
