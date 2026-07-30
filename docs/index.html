@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Which Page Do You Fix First? — John Andrei Martinez</title>
+<meta name="description" content="A research paper on ranking content pages for refresh review, built on the FlyRank ML Internship dataset.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07090d; --surface:#0d1117; --border:#1e2733;
+    --text:#e6edf3; --muted:#8b98a9; --accent:#8b5cf6;
+    --heading:"Sora",system-ui,sans-serif; --body:"Inter",system-ui,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:var(--body);
+       line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:clamp(2rem,6vw,5rem) 1.25rem}
+  h1{font-family:var(--heading);font-weight:700;font-size:clamp(1.7rem,4.5vw,2.6rem);
+     line-height:1.15;letter-spacing:-.02em}
+  h2{font-family:var(--heading);font-weight:500;font-size:1.05rem;margin-bottom:.4rem}
+  .byline{color:var(--muted);margin-top:1rem;font-size:.95rem}
+  .tag{display:inline-block;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;
+       color:var(--accent);border:1px solid var(--border);border-radius:99px;
+       padding:.25rem .7rem;margin-bottom:1.5rem}
+  .lede{color:var(--muted);margin-top:1.5rem;font-size:1.05rem}
+  hr{border:0;border-top:1px solid var(--border);margin:2.5rem 0}
+  ol{list-style:none;counter-reset:s}
+  li{counter-increment:s;border:1px solid var(--border);background:var(--surface);
+     border-radius:10px;padding:1rem 1.1rem;margin-bottom:.6rem}
+  li::before{content:counter(s);color:var(--accent);font-family:var(--heading);
+             font-size:.8rem;margin-right:.6rem}
+  li span{color:var(--muted);font-size:.9rem}
+  footer{margin-top:3rem;color:var(--muted);font-size:.85rem}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <span class="tag">Draft — in progress</span>
+  <h1>Which page do you fix first?</h1>
+  <p class="byline">John Andrei Martinez · FlyRank ML Internship · Applied Search Intelligence</p>
+  <p class="lede">Ranking content pages for refresh review, and testing honestly whether a
+     learned ranking beats a transparent rule. This page is live and waiting for its
+     content — the sections below are the shape the finished paper will take.</p>
+
+  <hr>
+
+  <ol>
+    <li><h2>Abstract</h2><span>Question, method, result — in five sentences.</span></li>
+    <li><h2>Introduction</h2><span>The decision this work supports: which pages get the limited review slots.</span></li>
+    <li><h2>Data</h2><span>Release, tables, date windows, and what was excluded — public-safe throughout.</span></li>
+    <li><h2>Methodology</h2><span>Assumptions, features, label definition, baseline, and validation design.</span></li>
+    <li><h2>Results</h2><span>Model versus baseline on the same split, with charts.</span></li>
+    <li><h2>Limitations</h2><span>What this work observes, and what it can never claim.</span></li>
+    <li><h2>Ranked recommendations</h2><span>The action playbook, with reason codes.</span></li>
+    <li><h2>Reproducibility</h2><span>Links to every notebook and the repo.</span></li>
+  </ol>
+
+  <footer>
+    Built on the <a href="https://flyrank.ai">FlyRank</a> ML Internship dataset.
+    Notebooks and code: <a href="https://github.com/Zeref538/flyrank-ml-internship">github.com/Zeref538/flyrank-ml-internship</a>
+  </footer>
+</main>
+</body>
+</html>
