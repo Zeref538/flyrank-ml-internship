@@ -1,0 +1,47 @@
+{
+  "eligible_pages": 13562,
+  "test_base_rate": 0.551,
+  "single_split": {
+    "baseline rule (ML-07)": {
+      "P@10": 0.9,
+      "P@20": 0.95,
+      "P@50": 0.86,
+      "ROC_AUC": 0.582,
+      "PR_AUC": 0.651
+    },
+    "logistic_regression": {
+      "P@10": 0.8,
+      "P@20": 0.8,
+      "P@50": 0.78,
+      "ROC_AUC": 0.639,
+      "PR_AUC": 0.668
+    },
+    "decision_tree": {
+      "P@10": 0.7,
+      "P@20": 0.5,
+      "P@50": 0.5,
+      "ROC_AUC": 0.616,
+      "PR_AUC": 0.625
+    },
+    "random_forest": {
+      "P@10": 0.7,
+      "P@20": 0.85,
+      "P@50": 0.76,
+      "ROC_AUC": 0.643,
+      "PR_AUC": 0.677
+    },
+    "gradient_boosting": {
+      "P@10": 0.9,
+      "P@20": 0.9,
+      "P@50": 0.88,
+      "ROC_AUC": 0.618,
+      "PR_AUC": 0.667
+    }
+  },
+  "baseline_p50_tie_range": [
+    0.76,
+    0.92
+  ],
+  "splits_gb_beats_rule": 6,
+  "mean_margin_over_8_splits": 0.056
+}
